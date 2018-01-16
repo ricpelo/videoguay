@@ -2,13 +2,13 @@
 
 namespace app\controllers;
 
+use app\models\ContactForm;
+use app\models\LoginForm;
 use Yii;
 use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\Response;
-use yii\filters\VerbFilter;
-use app\models\LoginForm;
-use app\models\ContactForm;
 
 class SiteController extends Controller
 {
@@ -58,10 +58,30 @@ class SiteController extends Controller
      * Displays homepage.
      *
      * @return string
+     * @param mixed $socio_id
      */
-    public function actionIndex()
+    public function actionIndex($socio_id)
     {
-        return $this->render('index');
+        $nombre = Yii::$app->db
+            ->createCommand(
+                'SELECT titulo
+                   FROM alquileres a
+                   JOIN peliculas p ON a.pelicula_id = p.id
+                  WHERE socio_id = :socio_id',
+                [':socio_id' => $socio_id]
+            )
+            ->queryAll();
+
+        $nombre = (new \yii\db\Query())
+            ->select('titulo')
+            ->from('alquileres a')
+            ->join('LEFT JOIN', 'peliculas p', 'p.id = a.pelicula_id')
+            ->where(['socio_id' => $socio_id])
+            ->all();
+
+        echo '<pre>';
+        var_dump($nombre);
+        // return $this->render('index');
     }
 
     /**
