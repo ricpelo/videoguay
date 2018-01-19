@@ -1,5 +1,7 @@
 <?php
 
+use yii\data\ActiveDataProvider;
+use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
@@ -38,4 +40,24 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h3>Últimas peliculas alquiladas</h3>
 
+    <?= GridView::widget([
+        'dataProvider' => new ActiveDataProvider([
+            'query' => $peliculas,
+            'pagination' => false,
+            'sort' => false,
+        ]),
+    ]) ?>
+
+    <table class="table">
+        <thead>
+            <th>Código</th>
+            <th>Título</th>
+        </thead>
+        <?php foreach ($peliculas->all() as $pelicula): ?>
+            <tr>
+                <td><?= Html::encode($pelicula->codigo) ?></td>
+                <td><?= Html::encode($pelicula->titulo) ?></td>
+            </tr>
+        <?php endforeach ?>
+    </table>
 </div>

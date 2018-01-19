@@ -53,14 +53,13 @@ class SociosController extends Controller
      */
     public function actionView($id)
     {
-        $peliculas = Peliculas::find()
+        $p = Peliculas::find()
             ->joinWith('alquileres')
-            ->where(['socio_id' => $id])
-            ->all();
+            ->where(['socio_id' => $id]);
 
         return $this->render('view', [
             'model' => $this->findModel($id),
-            'peliculas' => $peliculas,
+            'peliculas' => $p,
         ]);
     }
 
