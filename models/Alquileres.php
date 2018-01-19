@@ -35,7 +35,7 @@ class Alquileres extends \yii\db\ActiveRecord
             [['socio_id', 'pelicula_id'], 'required'],
             [['socio_id', 'pelicula_id'], 'default', 'value' => null],
             [['socio_id', 'pelicula_id'], 'integer'],
-            [['created_at', 'devolucion'], 'safe'],
+            [['devolucion'], 'safe'],
             [['socio_id', 'pelicula_id', 'created_at'], 'unique', 'targetAttribute' => ['socio_id', 'pelicula_id', 'created_at']],
             [['pelicula_id'], 'exist', 'skipOnError' => true, 'targetClass' => Peliculas::className(), 'targetAttribute' => ['pelicula_id' => 'id']],
             [['socio_id'], 'exist', 'skipOnError' => true, 'targetClass' => Socios::className(), 'targetAttribute' => ['socio_id' => 'id']],

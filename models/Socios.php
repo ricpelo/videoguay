@@ -2,8 +2,6 @@
 
 namespace app\models;
 
-use Yii;
-
 /**
  * This is the model class for table "socios".
  *
@@ -45,10 +43,10 @@ class Socios extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'numero' => 'Numero',
+            'numero' => 'Número',
             'nombre' => 'Nombre',
-            'direccion' => 'Direccion',
-            'telefono' => 'Telefono',
+            'direccion' => 'Dirección',
+            'telefono' => 'Teléfono',
         ];
     }
 
@@ -58,5 +56,11 @@ class Socios extends \yii\db\ActiveRecord
     public function getAlquileres()
     {
         return $this->hasMany(Alquileres::className(), ['socio_id' => 'id'])->inverseOf('socio');
+    }
+
+    public function getPeliculas()
+    {
+        return $this->hasMany(Peliculas::className(), ['id' => 'pelicula_id'])
+            ->via('alquileres');
     }
 }

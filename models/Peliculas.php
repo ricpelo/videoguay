@@ -2,8 +2,6 @@
 
 namespace app\models;
 
-use Yii;
-
 /**
  * This is the model class for table "peliculas".
  *
@@ -56,5 +54,11 @@ class Peliculas extends \yii\db\ActiveRecord
     public function getAlquileres()
     {
         return $this->hasMany(Alquileres::className(), ['pelicula_id' => 'id'])->inverseOf('pelicula');
+    }
+
+    public function getSocios()
+    {
+        return $this->hasMany(Socios::className(), ['id' => 'socio_id'])
+            ->via('alquileres');
     }
 }

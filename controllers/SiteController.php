@@ -60,28 +60,9 @@ class SiteController extends Controller
      * @return string
      * @param mixed $socio_id
      */
-    public function actionIndex($socio_id)
+    public function actionIndex()
     {
-        $nombre = Yii::$app->db
-            ->createCommand(
-                'SELECT titulo
-                   FROM alquileres a
-                   JOIN peliculas p ON a.pelicula_id = p.id
-                  WHERE socio_id = :socio_id',
-                [':socio_id' => $socio_id]
-            )
-            ->queryAll();
-
-        $nombre = (new \yii\db\Query())
-            ->select('titulo')
-            ->from('alquileres a')
-            ->join('LEFT JOIN', 'peliculas p', 'p.id = a.pelicula_id')
-            ->where(['socio_id' => $socio_id])
-            ->all();
-
-        echo '<pre>';
-        var_dump($nombre);
-        // return $this->render('index');
+        return $this->render('index');
     }
 
     /**
