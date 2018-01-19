@@ -2,8 +2,6 @@
 
 namespace app\models;
 
-use Yii;
-
 /**
  * This is the model class for table "alquileres".
  *
@@ -51,7 +49,7 @@ class Alquileres extends \yii\db\ActiveRecord
             'id' => 'ID',
             'socio_id' => 'Socio ID',
             'pelicula_id' => 'Pelicula ID',
-            'created_at' => 'Created At',
+            'created_at' => 'Alquilada en',
             'devolucion' => 'Devolucion',
         ];
     }
