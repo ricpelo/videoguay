@@ -40,17 +40,20 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h3>Últimas peliculas alquiladas</h3>
 
-    <?= GridView::widget([
-        'dataProvider' => new ActiveDataProvider([
-            'query' => $alquileres,
-            'pagination' => false,
-            'sort' => false,
-        ]),
-        'columns' => [
-            'pelicula.codigo',
-            'pelicula.titulo',
-            'created_at',
-        ],
-    ]) ?>
-
+    <table class="table">
+        <thead>
+            <th>Código</th>
+            <th>Título</th>
+            <th>Fecha de alquiler</th>
+        </thead>
+        <tbody>
+            <?php foreach ($alquileres as $alquiler): ?>
+                <tr>
+                    <td><?= Html::encode($alquiler->pelicula->codigo) ?></td>
+                    <td><?= Html::encode($alquiler->pelicula->titulo) ?></td>
+                    <td><?= Html::encode($alquiler->created_at) ?></td>
+                </tr>
+            <?php endforeach ?>
+        </tbody>
+    </table>
 </div>

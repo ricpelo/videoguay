@@ -3,7 +3,6 @@
 namespace app\controllers;
 
 use app\models\Alquileres;
-use app\models\Peliculas;
 use app\models\Socios;
 use app\models\SociosSearch;
 use Yii;
@@ -54,15 +53,12 @@ class SociosController extends Controller
      */
     public function actionView($id)
     {
-        $p = Peliculas::find()
-            ->joinWith('alquileres')
-            ->where(['socio_id' => $id]);
-
         $p = Alquileres::find()
-            ->joinWith('pelicula')
+            ->with('pelicula')
             ->where(['socio_id' => $id])
             ->orderBy('created_at DESC')
-            ->limit(10);
+            ->limit(10)
+            ->all();
 
         return $this->render('view', [
             'model' => $this->findModel($id),
