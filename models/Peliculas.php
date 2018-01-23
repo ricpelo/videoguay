@@ -42,10 +42,21 @@ class Peliculas extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'codigo' => 'Codigo',
-            'titulo' => 'Titulo',
-            'precio_alq' => 'Precio Alq',
+            'codigo' => 'Código',
+            'titulo' => 'Título',
+            'precio_alq' => 'Precio alquiler',
         ];
+    }
+
+    /**
+     * Comprueba si una película está alquilada.
+     * @return bool Si está alquilada o no.
+     */
+    public function getEstaAlquilada()
+    {
+        return $this->getAlquileres()
+            ->where(['devolucion' => null])
+            ->exists();
     }
 
     /**
