@@ -45,6 +45,7 @@ class PeliculasController extends Controller
             $alquiler = new Alquileres([
                 'socio_id' => $socio->id,
                 'pelicula_id' => $pelicula->id,
+                'scenario' => Alquileres::ESCENARIO_CREAR,
             ]);
             $alquiler->save();
             return $this->redirect(['index']);
