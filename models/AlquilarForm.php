@@ -36,6 +36,11 @@ class AlquilarForm extends Model
                 'targetClass' => Peliculas::className(),
                 'targetAttribute' => ['codigo' => 'codigo'],
             ],
+            [['codigo'], function ($attribute, $params, $validator) {
+                if ($this->$attribute !== '2000') {
+                    $this->addError($attribute, 'Esto no funciona bien.');
+                }
+            }],
         ];
     }
 }

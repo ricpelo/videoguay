@@ -10,6 +10,8 @@ use Yii;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
 
 /**
  * PeliculasController implements the CRUD actions for Peliculas model.
@@ -31,6 +33,31 @@ class PeliculasController extends Controller
         ];
     }
 
+    public function actionListado($numero)
+    {
+        if (!Yii::$app->request->isAjax) {
+            return;
+        }
+
+        $socio = Socios::findOne(['numero' => $numero]);
+
+        if ($socio === null) {
+            return;
+        }
+
+        $alquileres = Alquileres::find()->where(['socio_id' => $socio->id]);
+        $out = \yii\grid\GridView::widget([
+            'id' => 'listado',
+            'dataProvider' => new \yii\data\ActiveDataProvider([
+                'query' => $alquileres,
+                'pagination' => false,
+                'sort' => false,
+            ])
+        ]);
+
+        return $out;
+    }
+
     /**
      * Alquila una película.
      * @return mixed
@@ -38,6 +65,27 @@ class PeliculasController extends Controller
     public function actionAlquilar()
     {
         $alquilarForm = new \app\models\AlquilarForm();
+
+        if ($alquilarForm->load(Yii::$app->request->post())) {
+            if (Yii::$app->request->isAjax) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                return ActiveForm::validate($alquilarForm);
+            } elseif ($alquilarForm->validate()) {
+                $socio = Socios::findOne(['numero' => $alquilarForm->numero]);
+                $pelicula = Peliculas::findOne(['codigo' => $alquilarForm->codigo]);
+                $alquiler = new Alquileres([
+                    'socio_id' => $socio->id,
+                    'pelicula_id' => $pelicula->id,
+                ]);
+                $alquiler->save();
+                return $this->redirect(['index']);
+            }
+        }
+/*
+        if (Yii::$app->request->isAjax && $alquilarForm->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ActiveForm::validate($alquilarForm);
+        }
 
         if ($alquilarForm->load(Yii::$app->request->post()) && $alquilarForm->validate()) {
             $socio = Socios::findOne(['numero' => $alquilarForm->numero]);
@@ -49,7 +97,7 @@ class PeliculasController extends Controller
             $alquiler->save();
             return $this->redirect(['index']);
         }
-
+*/
         return $this->render('alquilar', [
             'alquilarForm' => $alquilarForm,
         ]);
