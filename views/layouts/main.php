@@ -39,6 +39,7 @@ AppAsset::register($this);
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
             ['label' => 'Home', 'url' => ['/site/index']],
+            ['label' => 'Gestionar', 'url' => ['alquileres/gestionar']],
             ['label' => 'Socios', 'url' => ['socios/index']],
             ['label' => 'Películas', 'url' => ['peliculas/index']],
             ['label' => 'Alquileres', 'url' => ['alquileres/index']],

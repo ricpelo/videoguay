@@ -53,11 +53,24 @@ class Socios extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getPendientes()
+    {
+        return $this->getAlquileres()
+            ->where(['devolucion' => null])
+            ->orderBy(['created_at' => SORT_DESC]);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getAlquileres()
     {
         return $this->hasMany(Alquileres::className(), ['socio_id' => 'id'])->inverseOf('socio');
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getPeliculas()
     {
         return $this->hasMany(Peliculas::className(), ['id' => 'pelicula_id'])

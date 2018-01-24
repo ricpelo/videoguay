@@ -2,12 +2,14 @@
 
 namespace app\controllers;
 
-use Yii;
 use app\models\Alquileres;
 use app\models\AlquileresSearch;
+use app\models\GestionarForm;
+use app\models\Socios;
+use Yii;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * AlquileresController implements the CRUD actions for Alquileres model.
@@ -30,6 +32,25 @@ class AlquileresController extends Controller
     }
 
     /**
+     * Alquila y devuelve películas en una sola acción.
+     * @return mixed
+     */
+    public function actionGestionar()
+    {
+        $model = new GestionarForm();
+
+        $data = [];
+
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $socio = Socios::findOne(['numero' => $model->numero]);
+            $data['socio'] = $socio;
+        }
+
+        $data['model'] = $model;
+        return $this->render('gestionar', $data);
+    }
+
+    /**
      * Lists all Alquileres models.
      * @return mixed
      */
@@ -46,7 +67,7 @@ class AlquileresController extends Controller
 
     /**
      * Displays a single Alquileres model.
-     * @param integer $id
+     * @param int $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
@@ -78,7 +99,7 @@ class AlquileresController extends Controller
     /**
      * Updates an existing Alquileres model.
      * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
+     * @param int $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
@@ -98,7 +119,7 @@ class AlquileresController extends Controller
     /**
      * Deletes an existing Alquileres model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
+     * @param int $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
@@ -112,7 +133,7 @@ class AlquileresController extends Controller
     /**
      * Finds the Alquileres model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
+     * @param int $id
      * @return Alquileres the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
