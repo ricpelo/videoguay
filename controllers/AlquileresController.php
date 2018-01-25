@@ -10,6 +10,7 @@ use Yii;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 /**
  * AlquileresController implements the CRUD actions for Alquileres model.
@@ -34,20 +35,48 @@ class AlquileresController extends Controller
     /**
      * Alquila y devuelve películas en una sola acción.
      * @return mixed
+     * @param null|mixed $numero
      */
-    public function actionGestionar()
+    public function actionGestionar($numero = null)
     {
-        $model = new GestionarForm();
+        $model = new GestionarForm([
+            'numero' => $numero,
+        ]);
 
         $data = [];
 
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+        if ($numero !== null && $model->validate()) {
             $socio = Socios::findOne(['numero' => $model->numero]);
             $data['socio'] = $socio;
         }
 
         $data['model'] = $model;
         return $this->render('gestionar', $data);
+    }
+
+    /**
+     * Devuelve un alquiler indicado por el `id` pasado por POST.
+     * @param  string   $numero      El número del socio para volver a él.
+     * @return Response              La redirección.
+     * @throws NotFoundHttpException Si el `id` falta o no es correcto.
+     */
+    public function actionDevolver($numero)
+    {
+        if (($id = Yii::$app->request->post('id')) === null) {
+            throw new NotFoundHttpException('Falta el alquiler.');
+        }
+
+        if (($alquiler = Alquileres::findOne($id)) === null) {
+            throw new NotFoundHttpException('El alquiler no existe.');
+        }
+
+        $alquiler->devolucion = date('Y-m-d H:i:s');
+        $alquiler->save();
+
+        return $this->redirect([
+            'alquileres/gestionar',
+            'numero' => $numero,
+        ]);
     }
 
     /**

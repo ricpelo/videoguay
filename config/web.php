@@ -14,6 +14,9 @@ $config = [
     ],
     'language' => 'es-ES',
     'components' => [
+        'formatter' => [
+            'timeZone' => 'Europe/Madrid',
+        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'W__x5822t966lx7vIyGerM-UhyA0ffLA',
@@ -47,7 +50,6 @@ $config = [
         */
     ],
     'params' => $params,
-    'timeZone' => 'Europe/Madrid',
 ];
 
 if (YII_ENV_DEV) {

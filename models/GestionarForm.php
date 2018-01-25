@@ -17,6 +17,11 @@ class GestionarForm extends Model
      */
     public $codigo;
 
+    public function formName()
+    {
+        return '';
+    }
+
     public function attributeLabels()
     {
         return [
