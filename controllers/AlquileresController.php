@@ -5,9 +5,11 @@ namespace app\controllers;
 use app\models\Alquileres;
 use app\models\AlquileresSearch;
 use app\models\GestionarForm;
+use app\models\Peliculas;
 use app\models\Socios;
 use Yii;
 use yii\filters\VerbFilter;
+use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -36,8 +38,9 @@ class AlquileresController extends Controller
      * Alquila y devuelve películas en una sola acción.
      * @return mixed
      * @param null|mixed $numero
+     * @param null|mixed $codigo
      */
-    public function actionGestionar($numero = null)
+    public function actionGestionar($numero = null, $codigo = null)
     {
         $model = new GestionarForm([
             'numero' => $numero,
@@ -46,12 +49,39 @@ class AlquileresController extends Controller
         $data = [];
 
         if ($numero !== null && $model->validate()) {
-            $socio = Socios::findOne(['numero' => $model->numero]);
-            $data['socio'] = $socio;
+            $data['socio'] = Socios::findOne(['numero' => $numero]);
+            $model->codigo = $codigo;
+            if ($model->validate()) {
+                $data['pelicula'] = Peliculas::findOne([
+                    'codigo' => $model->codigo,
+                ]);
+            }
         }
 
         $data['model'] = $model;
         return $this->render('gestionar', $data);
+    }
+
+    /**
+     * Alquila una película dados `socio_id` y `pelicula_id`
+     * pasados por POST.
+     * @param  string   $numero        El número del socio para volver a él.
+     * @return Response                La redirección.
+     * @throws BadRequestHttpException Si algún `id` es incorrecto.
+     */
+    public function actionAlquilar($numero)
+    {
+        $alquiler = new Alquileres();
+
+        if ($alquiler->load(Yii::$app->request->post(), '') &&
+            $alquiler->save()) {
+            return $this->redirect([
+                'alquileres/gestionar',
+                'numero' => $numero,
+            ]);
+        }
+
+        throw new BadRequestHttpException('No se ha creado el alquiler.');
     }
 
     /**

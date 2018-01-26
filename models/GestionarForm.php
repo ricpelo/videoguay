@@ -34,7 +34,8 @@ class GestionarForm extends Model
     {
         return [
             [['numero'], 'required'],
-            [['numero', 'codigo'], 'number'],
+            [['numero', 'codigo'], 'default'],
+            [['numero', 'codigo'], 'integer'],
             [
                 ['numero'],
                 'exist',
