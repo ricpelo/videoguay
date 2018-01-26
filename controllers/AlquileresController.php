@@ -4,7 +4,8 @@ namespace app\controllers;
 
 use app\models\Alquileres;
 use app\models\AlquileresSearch;
-use app\models\GestionarForm;
+use app\models\GestionarPeliculaForm;
+use app\models\GestionarSocioForm;
 use app\models\Peliculas;
 use app\models\Socios;
 use Yii;
@@ -42,23 +43,27 @@ class AlquileresController extends Controller
      */
     public function actionGestionar($numero = null, $codigo = null)
     {
-        $model = new GestionarForm([
+        $gestionarSocioForm = new GestionarSocioForm([
             'numero' => $numero,
         ]);
 
         $data = [];
 
-        if ($numero !== null && $model->validate()) {
+        if ($numero !== null && $gestionarSocioForm->validate()) {
             $data['socio'] = Socios::findOne(['numero' => $numero]);
-            $model->codigo = $codigo;
-            if ($model->validate()) {
+            $gestionarPeliculaForm = new GestionarPeliculaForm([
+                'numero' => $numero,
+                'codigo' => $codigo,
+            ]);
+            $data['gestionarPeliculaForm'] = $gestionarPeliculaForm;
+            if ($codigo !== null && $gestionarPeliculaForm->validate()) {
                 $data['pelicula'] = Peliculas::findOne([
-                    'codigo' => $model->codigo,
+                    'codigo' => $gestionarPeliculaForm->codigo,
                 ]);
             }
         }
 
-        $data['model'] = $model;
+        $data['gestionarSocioForm'] = $gestionarSocioForm;
         return $this->render('gestionar', $data);
     }
 

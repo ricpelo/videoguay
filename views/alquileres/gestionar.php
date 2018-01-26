@@ -3,8 +3,10 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /** @var $this \yii\web\View */
-/** @var $model \app\models\GestionarForm */
+/** @var $gestionarSocioForm \app\models\GestionarSocioForm */
+/** @var $gestionarPeliculaForm \app\models\GestionarPeliculaForm */
 /** @var $socio \app\models\Socios */
+/** @var $pelicula \app\models\Peliculas */
 ?>
 
 <div class="row">
@@ -13,7 +15,7 @@ use yii\widgets\ActiveForm;
             'method' => 'get',
             'action' => ['alquileres/gestionar'],
         ]) ?>
-            <?= $form->field($model, 'numero') ?>
+            <?= $form->field($gestionarSocioForm, 'numero') ?>
             <div class="form-group">
                 <?= Html::submitButton('Buscar socio', ['class' => 'btn btn-success']) ?>
             </div>
@@ -29,8 +31,8 @@ use yii\widgets\ActiveForm;
                 'method' => 'get',
                 'action' => ['alquileres/gestionar'],
             ]) ?>
-                <?= Html::hiddenInput('numero', $model->numero) ?>
-                <?= $form->field($model, 'codigo') ?>
+                <?= Html::hiddenInput('numero', $gestionarPeliculaForm->numero) ?>
+                <?= $form->field($gestionarPeliculaForm, 'codigo') ?>
                 <div class="form-group">
                     <?= Html::submitButton('Buscar película', ['class' => 'btn btn-success']) ?>
                 </div>
