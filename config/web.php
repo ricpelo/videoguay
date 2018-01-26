@@ -15,6 +15,7 @@ $config = [
     'language' => 'es-ES',
     'components' => [
         'formatter' => [
+            'datetimeFormat' => 'php:d-m-Y H:i:s',
             'timeZone' => 'Europe/Madrid',
         ],
         'request' => [

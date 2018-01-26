@@ -43,7 +43,6 @@ class Alquileres extends \yii\db\ActiveRecord
                 ['created_at'],
                 'datetime',
                 'timeZone' => \Yii::$app->formatter->timeZone,
-                'format' => 'php:d-m-Y H:i:s',
                 'timestampAttribute' => 'created_at',
                 'timestampAttributeFormat' => 'php:Y-m-d H:i:s',
             ],

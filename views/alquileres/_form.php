@@ -21,7 +21,7 @@ use kartik\datetime\DateTimePicker;
         ->widget(DateTimePicker::classname(), [
             'options' => [
                 'placeholder' => 'Introduzca instante...',
-                'value' => Yii::$app->formatter->asDatetime($model->created_at, 'php:d-m-Y H:i:s'),
+                'value' => Yii::$app->formatter->asDatetime($model->created_at),
             ],
             'pluginOptions' => [
                 'autoclose' => true,
