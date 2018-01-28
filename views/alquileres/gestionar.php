@@ -29,7 +29,12 @@ use yii\widgets\ActiveForm;
 
             <?php $form = ActiveForm::begin([
                 'method' => 'get',
-                'action' => ['alquileres/gestionar'],
+                'action' => [
+                    'alquileres/gestionar',
+                    'page' => Yii::$app->request->get('page'),
+                    'per-page' => Yii::$app->request->get('per-page'),
+                    'sort' => Yii::$app->request->get('sort'),
+                ],
             ]) ?>
                 <?= Html::hiddenInput('numero', $gestionarPeliculaForm->numero) ?>
                 <?= $form->field($gestionarPeliculaForm, 'codigo') ?>
@@ -66,6 +71,30 @@ use yii\widgets\ActiveForm;
     <div class="col-md-6">
         <?php if (isset($socio)): ?>
             <?php $pendientes = $socio->getPendientes()->with('pelicula') ?>
+
+<?= \yii\grid\GridView::widget([
+    'dataProvider' => new \yii\data\ActiveDataProvider([
+        'query' => $pendientes,
+        'pagination' => new \yii\data\Pagination([
+            'totalCount' => $pendientes->count(),
+            'pageSize' => 1,
+        ]),
+    ]),
+    'columns' => [
+        'pelicula.codigo',
+        'pelicula.titulo',
+        'created_at:datetime',
+        [
+            'value' => function ($alquiler) use ($socio) {
+                return Html::beginForm(['alquileres/devolver', 'numero' => $socio->numero], 'post')
+                       . Html::hiddenInput('id', $alquiler->id)
+                       . Html::submitButton('Devolver', ['class' => 'btn-xs btn-danger'])
+                       . Html::endForm();
+            },
+            'format' => 'raw',
+        ],
+    ]
+]) ?>
             <?php if ($pendientes->exists()): ?>
                 <h3>Alquileres pendientes</h3>
                 <table class="table">
