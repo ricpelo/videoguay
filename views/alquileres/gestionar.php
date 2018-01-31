@@ -7,6 +7,16 @@ use yii\widgets\ActiveForm;
 /** @var $gestionarPeliculaForm \app\models\GestionarPeliculaForm */
 /** @var $socio \app\models\Socios */
 /** @var $pelicula \app\models\Peliculas */
+
+$this->title = 'Gestión de alquileres'
+    . (isset($socio) ? (' del socio ' . $socio->nombre) : '');
+$this->params['breadcrumbs'][] = [
+    'label' => 'Gestionar alquileres',
+    'url' => ['alquileres/gestionar']
+];
+if (isset($socio)) {
+    $this->params['breadcrumbs'][] = $socio->nombre;
+}
 ?>
 
 <div class="row">
@@ -45,7 +55,7 @@ use yii\widgets\ActiveForm;
                 ) ?></h4>
 
                 <?php if ($pelicula->estaAlquilada): ?>
-                    <h4>Película ya alquilada</h4>
+                    <h4>Película ya alquilada por <?= $pelicula->pendiente->socio->enlace ?></h4>
                 <?php else: ?>
                     <?= Html::beginForm([
                         'alquileres/alquilar',
