@@ -72,6 +72,16 @@ class Alquileres extends \yii\db\ActiveRecord
         ];
     }
 
+    public function getEstaPendiente()
+    {
+        return $this->devolucion === null;
+    }
+
+    public function getEstaDevuelto()
+    {
+        return !$this->estaPendiente;
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */
