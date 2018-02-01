@@ -32,7 +32,7 @@ if (isset($socio)) {
         <?php ActiveForm::end() ?>
 
         <?php if (isset($socio)): ?>
-            <h4><?= Html::encode($socio->nombre) ?></h4>
+            <h4><?= $socio->enlace ?></h4>
             <h4><?= Html::encode($socio->telefono) ?></h4>
 
             <hr>
@@ -49,7 +49,7 @@ if (isset($socio)) {
             <?php ActiveForm::end() ?>
 
             <?php if (isset($pelicula)): ?>
-                <h4><?= Html::encode($pelicula->titulo) ?></h4>
+                <h4><?= $pelicula->enlace ?></h4>
                 <h4><?= Html::encode(
                     Yii::$app->formatter->asCurrency($pelicula->precio_alq)
                 ) ?></h4>
@@ -89,7 +89,7 @@ if (isset($socio)) {
                         <?php foreach ($pendientes->each() as $alquiler): ?>
                             <tr>
                                 <td><?= Html::encode($alquiler->pelicula->codigo) ?></td>
-                                <td><?= Html::encode($alquiler->pelicula->titulo) ?></td>
+                                <td><?= $alquiler->pelicula->enlace ?></td>
                                 <td><?= Html::encode(
                                     Yii::$app->formatter->asDatetime($alquiler->created_at)
                                 ) ?></td>

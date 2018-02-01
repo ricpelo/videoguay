@@ -2,6 +2,8 @@
 
 namespace app\models;
 
+use yii\helpers\Html;
+
 /**
  * This is the model class for table "peliculas".
  *
@@ -50,6 +52,13 @@ class Peliculas extends \yii\db\ActiveRecord
         ];
     }
 
+    public function getEnlace()
+    {
+        return Html::a(Html::encode($this->titulo), [
+            'peliculas/view',
+            'id' => $this->id,
+        ]);
+    }
     /**
      * Comprueba si una película está alquilada.
      * @return bool Si la película está alquilada o no.
