@@ -59,7 +59,7 @@ class AlquileresController extends Controller
         $data = [];
 
         if ($numero !== null && $gestionarSocioForm->validate()) {
-            $data['socio'] = Socios::findOne(['numero' => $numero]);
+            $data['socio'] = Socios::findOne(['numero' => $gestionarSocioForm->numero]);
             $gestionarPeliculaForm = new GestionarPeliculaForm([
                 'numero' => $numero,
                 'codigo' => $codigo,
