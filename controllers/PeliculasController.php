@@ -7,6 +7,7 @@ use app\models\Peliculas;
 use app\models\PeliculasSearch;
 use app\models\Socios;
 use Yii;
+use yii\data\ActiveDataProvider;
 use yii\data\Pagination;
 use yii\data\Sort;
 use yii\filters\VerbFilter;
@@ -39,28 +40,22 @@ class PeliculasController extends Controller
      */
     public function actionListado()
     {
-        $peliculas = Peliculas::find();
-        $pagination = new Pagination([
-            'totalCount' => $peliculas->count(),
-            'pageSize' => 20,
-        ]);
-        $sort = new Sort([
-            'attributes' => [
-                'codigo' => ['label' => 'Código'],
-                'titulo' => ['label' => 'Título'],
-                'precio_alq' => ['label' => 'Precio de alquiler'],
+        $dataProvider = new ActiveDataProvider([
+            'query' => Peliculas::find(),
+            'pagination' => [
+                'pageSize' => 2,
+            ],
+            'sort' => [
+                'attributes' => [
+                    'codigo' => ['label' => 'Código'],
+                    'titulo' => ['label' => 'Título'],
+                    'precio_alq' => ['label' => 'Precio de alquiler'],
+                ],
             ],
         ]);
-        $peliculas = $peliculas
-            ->orderBy($sort->orders)
-            ->limit($pagination->limit)
-            ->offset($pagination->offset)
-            ->all();
 
         return $this->render('listado', [
-            'peliculas' => $peliculas,
-            'pagination' => $pagination,
-            'sort' => $sort,
+            'dataProvider' => $dataProvider,
         ]);
     }
 
