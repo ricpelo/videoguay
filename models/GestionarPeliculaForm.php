@@ -35,7 +35,29 @@ class GestionarPeliculaForm extends Model
         return [
             [['numero', 'codigo'], 'required'],
             [['numero', 'codigo'], 'default'],
-            [['numero', 'codigo'], 'integer'],
+            [['numero'], 'filter', 'filter' => function ($value) {
+                if (!ctype_digit($value)) {
+                    $socio = \app\models\Socios::find()->where(['ilike', 'nombre', $value])->one();
+                    if ($socio !== null) {
+                        $value = $socio->numero;
+                    } else {
+                        $value = 0;
+                    }
+                }
+                return $value;
+            }],
+            [['codigo'], 'filter', 'filter' => function ($value) {
+                if (!ctype_digit($value)) {
+                    $pelicula = \app\models\Peliculas::find()->where(['ilike', 'titulo', $value])->one();
+                    if ($pelicula !== null) {
+                        $value = $pelicula->codigo;
+                    } else {
+                        $value = 0;
+                    }
+                }
+                return $value;
+            }],
+            [['numero', 'codigo'], 'integer', 'enableClientValidation' => false],
             [
                 ['numero'],
                 'exist',

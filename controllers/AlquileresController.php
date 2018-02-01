@@ -56,12 +56,21 @@ class AlquileresController extends Controller
             'numero' => $numero,
         ]);
 
+        if (Yii::$app->request->isAjax) {
+            $gestionarPeliculaForm = new GestionarPeliculaForm([
+                'numero' => $numero,
+                'codigo' => $codigo,
+            ]);
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return \yii\widgets\ActiveForm::validate($gestionarSocioForm, $gestionarPeliculaForm);
+        }
+
         $data = [];
 
         if ($numero !== null && $gestionarSocioForm->validate()) {
-            $data['socio'] = Socios::findOne(['numero' => $numero]);
+            $data['socio'] = Socios::findOne(['numero' => $gestionarSocioForm->numero]);
             $gestionarPeliculaForm = new GestionarPeliculaForm([
-                'numero' => $numero,
+                'numero' => $gestionarSocioForm->numero,
                 'codigo' => $codigo,
             ]);
             $data['gestionarPeliculaForm'] = $gestionarPeliculaForm;

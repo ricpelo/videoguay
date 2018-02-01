@@ -29,7 +29,18 @@ class GestionarSocioForm extends Model
         return [
             [['numero'], 'required'],
             [['numero'], 'default'],
-            [['numero'], 'integer'],
+            [['numero'], 'filter', 'filter' => function ($value) {
+                if (!ctype_digit($value)) {
+                    $socio = \app\models\Socios::find()->where(['ilike', 'nombre', $value])->one();
+                    if ($socio !== null) {
+                        $value = $socio->numero;
+                    } else {
+                        $value = 0;
+                    }
+                }
+                return $value;
+            }],
+            [['numero'], 'integer', 'enableClientValidation' => false],
             [
                 ['numero'],
                 'exist',
