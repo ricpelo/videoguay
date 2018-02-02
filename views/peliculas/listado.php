@@ -1,7 +1,10 @@
 <?php
 use yii\data\ActiveDataProvider;
+use yii\grid\GridView;
+
 use yii\helpers\Html;
 use yii\widgets\LinkPager;
+use yii\widgets\DetailView;
 
 /** @var $this \yii\web\View */
 /** @var $dataProvider ActiveDataProvider */
@@ -27,3 +30,22 @@ use yii\widgets\LinkPager;
 </table>
 
 <?= LinkPager::widget(['pagination' => $dataProvider->pagination]) ?>
+
+<?php foreach ($dataProvider->getModels() as $pelicula): ?>
+    <?= DetailView::widget([
+        'model' => $pelicula,
+        'attributes' => [
+            'codigo',
+            'titulo',
+            [
+                'label' => 'Precio de alquiler',
+                'value' => $pelicula->precio_alq,
+                'format' => 'currency',
+                'contentOptions' => [
+                    'class' => ($pelicula->precio_alq < 0) ? 'text-danger' : '',
+                    'style' => 'font-weight: bold',
+                ],
+            ],
+        ],
+    ]) ?>
+<?php endforeach ?>
