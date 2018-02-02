@@ -2,11 +2,18 @@
 -- Archivo de base de datos --
 ------------------------------
 
+DROP TABLE IF EXISTS socios_id CASCADE;
+
+CREATE TABLE socios_id
+(
+    id bigserial PRIMARY KEY
+);
+
 DROP TABLE IF EXISTS socios CASCADE;
 
 CREATE TABLE socios
 (
-    id        bigserial    PRIMARY KEY
+    id        bigint       PRIMARY KEY REFERENCES socios_id (id)
   , numero    numeric(6)   NOT NULL UNIQUE
   , nombre    varchar(255) NOT NULL
   , direccion varchar(255)
@@ -34,7 +41,7 @@ DROP TABLE IF EXISTS alquileres CASCADE;
 CREATE TABLE alquileres
 (
     id          bigserial    PRIMARY KEY
-  , socio_id    bigint       NOT NULL REFERENCES socios (id)
+  , socio_id    bigint       NOT NULL REFERENCES socios_id (id)
                              ON DELETE NO ACTION ON UPDATE CASCADE
   , pelicula_id bigint       NOT NULL REFERENCES peliculas (id)
                              ON DELETE NO ACTION ON UPDATE CASCADE
@@ -46,10 +53,12 @@ CREATE TABLE alquileres
 CREATE INDEX idx_alquileres_pelicula_id ON alquileres (pelicula_id);
 CREATE INDEX idx_alquileres_created_at ON alquileres (created_at DESC);
 
-INSERT INTO socios (numero, nombre, direccion, telefono)
-    VALUES (100, 'Pepe', 'Su casa', 956956956)
-         , (200, 'Juan', 'Su hogar', 856856856)
-         , (300, 'María', 'Su calle', 756756756);
+INSERT INTO socios_id (id) VALUES (DEFAULT), (DEFAULT), (DEFAULT);
+
+INSERT INTO socios (id, numero, nombre, direccion, telefono)
+    VALUES (1, 100, 'Pepe', 'Su casa', 956956956)
+         , (2, 200, 'Juan', 'Su hogar', 856856856)
+         , (3, 300, 'María', 'Su calle', 756756756);
 
 INSERT INTO peliculas (codigo, titulo, precio_alq)
     VALUES (1000, 'Los últimos jedi', 5)
