@@ -16,6 +16,8 @@ use yii\helpers\Html;
  */
 class Peliculas extends \yii\db\ActiveRecord
 {
+    public $todo;
+
     private $_pendiente;
 
     /**
@@ -24,6 +26,11 @@ class Peliculas extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'peliculas';
+    }
+
+    public function attributes()
+    {
+        return array_merge(parent::attributes(), ['todo']);
     }
 
     /**
@@ -49,6 +56,7 @@ class Peliculas extends \yii\db\ActiveRecord
             'codigo' => 'Código',
             'titulo' => 'Título',
             'precio_alq' => 'Precio alquiler',
+            'todo' => 'Todo',
         ];
     }
 

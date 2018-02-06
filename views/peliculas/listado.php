@@ -5,6 +5,7 @@ use yii\grid\DataColumn;
 use yii\grid\ActionColumn;
 use yii\grid\SerialColumn;
 
+use yii\helpers\Url;
 use yii\helpers\Html;
 
 /** @var $this \yii\web\View */
@@ -15,12 +16,13 @@ use yii\helpers\Html;
     'dataProvider' => $dataProvider,
     'columns' => [
         ['class' => SerialColumn::className()],
-        'codigo',
+        'codigo:text:Número',
         'titulo',
         [
-            'label' => 'Código + Título',
+            'attribute' => 'todo',
             'value' => function ($model, $key, $index, $column) {
-                return $model->codigo . ' ' . $model->titulo;
+                return $model->codigo . ' ' . $model->titulo . ' '
+                    . Yii::$app->formatter->asCurrency($model->precio_alq);
             },
             'format' => 'text',
         ],

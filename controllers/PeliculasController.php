@@ -42,6 +42,12 @@ class PeliculasController extends Controller
             'query' => Peliculas::find(),
         ]);
 
+        $dataProvider->sort->attributes['todo'] = [
+            'asc' => ['codigo' => SORT_ASC, 'titulo' => SORT_ASC, 'precio_alq' => SORT_ASC],
+            'desc' => ['codigo' => SORT_DESC, 'titulo' => SORT_DESC, 'precio_alq' => SORT_DESC],
+            'default' => SORT_ASC,
+        ];
+
         return $this->render('listado', [
             'dataProvider' => $dataProvider,
         ]);
