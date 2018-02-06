@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
@@ -17,7 +18,16 @@ class AlquileresSearch extends Alquileres
     {
         return [
             [['id', 'socio_id', 'pelicula_id'], 'integer'],
-            [['created_at', 'devolucion', 'pelicula.titulo'], 'safe'],
+            [['devolucion', 'pelicula.titulo'], 'safe'],
+            [['created_at'], 'default'],
+            [
+                ['created_at'],
+                'datetime',
+                'timeZone' => Yii::$app->formatter->timeZone,
+                'format' => Yii::$app->formatter->datetimeFormat,
+                'timestampAttribute' => 'created_at',
+                'timestampAttributeFormat' => 'php:Y-m-d H:i:s',
+            ],
         ];
     }
 

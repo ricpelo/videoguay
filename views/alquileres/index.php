@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use kartik\datetime\DateTimePicker;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\AlquileresSearch */
@@ -25,7 +26,22 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             'socio_id',
             'pelicula.titulo',
-            'created_at:datetime',
+            [
+                'attribute' => 'created_at',
+                'filter' => DateTimePicker::widget([
+                    'model' => $searchModel,
+                    'attribute' => 'created_at',
+                    'options' => [
+                        'value' => $searchModel->created_at === null ? '' : Yii::$app->formatter->asDatetime($searchModel->created_at),
+                    ],
+                    'readonly' => true,
+                    'pluginOptions' => [
+                        'weekStart' => 1,
+                        'format' => 'dd-mm-yyyy hh:ii:ss',
+                    ],
+               ]) // . Html::error($searchModel, 'created_at')
+            ],
+            //'created_at:datetime',
             'devolucion:datetime',
 
             ['class' => 'yii\grid\ActionColumn'],
