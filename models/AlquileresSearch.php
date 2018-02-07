@@ -18,15 +18,15 @@ class AlquileresSearch extends Alquileres
     {
         return [
             [['id', 'socio_id', 'pelicula_id'], 'integer'],
-            [['devolucion', 'pelicula.titulo'], 'safe'],
-            [['created_at'], 'default'],
+            [['pelicula.titulo'], 'safe'],
+            [['created_at'], 'datetime', 'format' => 'php:Y-m-d H:i:s'],
+            [['devolucion'], 'default'],
             [
-                ['created_at'],
+                ['devolucion'],
                 'datetime',
-                'timeZone' => Yii::$app->formatter->timeZone,
-                'format' => Yii::$app->formatter->datetimeFormat,
-                'timestampAttribute' => 'created_at',
+                'timestampAttribute' => 'devolucion',
                 'timestampAttributeFormat' => 'php:Y-m-d H:i:s',
+                'timeZone' => \Yii::$app->formatter->timeZone,
             ],
         ];
     }

@@ -1,8 +1,7 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
-use kartik\datetime\DateTimePicker;
+use kartik\grid\GridView;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\AlquileresSearch */
@@ -10,6 +9,12 @@ use kartik\datetime\DateTimePicker;
 
 $this->title = 'Alquileres';
 $this->params['breadcrumbs'][] = $this->title;
+
+function format($v)
+{
+    return $v === null ? '' : Yii::$app->formatter->asDatetime($v);
+}
+
 ?>
 <div class="alquileres-index">
 
@@ -28,21 +33,36 @@ $this->params['breadcrumbs'][] = $this->title;
             'pelicula.titulo',
             [
                 'attribute' => 'created_at',
-                'filter' => DateTimePicker::widget([
+                'format' => 'datetime',
+                'filterType' => 'kartik\datecontrol\DateControl',
+                'filterWidgetOptions' => [
                     'model' => $searchModel,
                     'attribute' => 'created_at',
-                    'options' => [
-                        'value' => $searchModel->created_at === null ? '' : Yii::$app->formatter->asDatetime($searchModel->created_at),
-                    ],
+                    'type' => 'datetime',
+                    'displayFormat' => 'php:d-m-Y H:i:s',
+                    'displayTimezone' => \Yii::$app->formatter->timeZone,
+                    'saveFormat' => 'php:Y-m-d H:i:s',
+                    'saveTimezone' => 'UTC',
                     'readonly' => true,
+                ],
+            ],
+            [
+                'attribute' => 'devolucion',
+                'format' => 'datetime',
+                'filterType' => GridView::FILTER_DATETIME,
+                'filterWidgetOptions' => [
+                    'model' => $searchModel,
+                    'attribute' => 'devolucion',
+                    'options' => [
+                        'value' => format($searchModel->devolucion),
+                    ],
                     'pluginOptions' => [
-                        'weekStart' => 1,
+                        'autoclose' => true,
                         'format' => 'dd-mm-yyyy hh:ii:ss',
                     ],
-               ]) // . Html::error($searchModel, 'created_at')
+                    'readonly' => true,
+                ],
             ],
-            //'created_at:datetime',
-            'devolucion:datetime',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
