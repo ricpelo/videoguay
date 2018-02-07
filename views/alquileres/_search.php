@@ -21,7 +21,9 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'pelicula_id') ?>
 
-    <?= $form->field($model, 'created_at') ?>
+    <?= $form->field($model, 'desdeAlquilado') ?>
+
+    <?= $form->field($model, 'hastaAlquilado') ?>
 
     <?= $form->field($model, 'devolucion') ?>
 

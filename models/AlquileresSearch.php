@@ -10,20 +10,41 @@ use yii\data\ActiveDataProvider;
  */
 class AlquileresSearch extends Alquileres
 {
+    public $desdeAlquilado;
+
+    public $hastaAlquilado;
+
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['id', 'socio_id', 'pelicula_id'], 'integer'],
-            [['created_at', 'devolucion', 'pelicula.titulo'], 'safe'],
+            [['socio.numero', 'pelicula.codigo'], 'integer'],
+            [
+                [
+                    'created_at',
+                    'devolucion',
+                    'socio.nombre',
+                    'pelicula.titulo',
+                    'desdeAlquilado',
+                    'hastaAlquilado',
+                ],
+                'safe',
+            ],
         ];
     }
 
     public function attributes()
     {
-        return array_merge(parent::attributes(), ['pelicula.titulo']);
+        return array_merge(parent::attributes(), [
+            'socio.numero',
+            'socio.nombre',
+            'pelicula.codigo',
+            'pelicula.titulo',
+            'desdeAlquilado',
+            'hastaAlquilado',
+        ]);
     }
 
     /**
@@ -44,7 +65,7 @@ class AlquileresSearch extends Alquileres
      */
     public function search($params)
     {
-        $query = Alquileres::find()->joinWith('pelicula');
+        $query = Alquileres::find()->joinWith(['pelicula', 'socio']);
 
         // add conditions that should always apply here
 
@@ -60,6 +81,23 @@ class AlquileresSearch extends Alquileres
             return $dataProvider;
         }
 
+        $dataProvider->sort->defaultOrder = ['created_at' => SORT_DESC];
+
+        $dataProvider->sort->attributes['socio.numero'] = [
+            'asc' => ['socios.numero' => SORT_ASC],
+            'desc' => ['socios.numero' => SORT_DESC],
+        ];
+
+        $dataProvider->sort->attributes['socio.nombre'] = [
+            'asc' => ['socios.nombre' => SORT_ASC],
+            'desc' => ['socios.nombre' => SORT_DESC],
+        ];
+
+        $dataProvider->sort->attributes['pelicula.codigo'] = [
+            'asc' => ['peliculas.codigo' => SORT_ASC],
+            'desc' => ['peliculas.codigo' => SORT_DESC],
+        ];
+
         $dataProvider->sort->attributes['pelicula.titulo'] = [
             'asc' => ['peliculas.titulo' => SORT_ASC],
             'desc' => ['peliculas.titulo' => SORT_DESC],
@@ -67,11 +105,16 @@ class AlquileresSearch extends Alquileres
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'socio_id' => $this->socio_id,
-            'pelicula_id' => $this->pelicula_id,
+            'socios.numero' => $this->getAttribute('socio.numero'),
+            'peliculas.codigo' => $this->getAttribute('pelicula.codigo'),
             'created_at' => $this->created_at,
             'devolucion' => $this->devolucion,
+        ]);
+
+        $query->andFilterWhere([
+            'ilike',
+            'socios.nombre',
+            $this->getAttribute('socio.nombre'),
         ]);
 
         $query->andFilterWhere([
