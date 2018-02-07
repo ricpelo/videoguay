@@ -1,7 +1,5 @@
 <?php
 
-use yii\helpers\Url;
-
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 $log = require __DIR__ . '/log.php';
@@ -18,8 +16,8 @@ $config = [
     'components' => [
         'formatter' => [
             'timeZone' => 'Europe/Madrid',
-            'datetimeFormat' => 'php:d-m-Y H:i:s',
-            'dateFormat' => 'php:d-m-Y',
+            'datetimeFormat' => $params['datetimeFormat'],
+            'dateFormat' => $params['dateFormat'],
         ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
@@ -54,14 +52,34 @@ $config = [
         */
     ],
     'params' => $params,
-    // 'on beforeAction' => function ($event) {
-    //     $action = $event->action->id;
-    //     $controller = $event->action->controller->id;
-    //     if ("$controller/$action" !== 'alquileres/devolver' &&
-    //         "$controller/$action" !== 'default/toolbar') {
-    //         Yii::$app->session->set('rutaVuelta', Url::to());
-    //     }
-    // },
+    'modules' => [
+        'datecontrol' => [
+            'class' => '\kartik\datecontrol\Module',
+            'displaySettings' => [
+                \kartik\datecontrol\Module::FORMAT_DATE => $params['dateFormat'],
+                \kartik\datecontrol\Module::FORMAT_TIME => $params['timeFormat'],
+                \kartik\datecontrol\Module::FORMAT_DATETIME => $params['datetimeFormat'],
+            ],
+            'saveSettings' => [
+                \kartik\datecontrol\Module::FORMAT_DATE => 'php:Y-m-d',
+                \kartik\datecontrol\Module::FORMAT_TIME => 'php:H:i:s',
+                \kartik\datecontrol\Module::FORMAT_DATETIME => 'php:Y-m-d H:i:s',
+            ],
+            'displayTimezone' => 'Europe/Madrid',
+            'saveTimezone' => 'UTC',
+            'autoWidgetSettings' => [
+                \kartik\datecontrol\Module::FORMAT_DATETIME => [
+                    'options' => [
+                        'readonly' => true,
+                    ],
+                    'pluginOptions' => [
+                        'autoclose' => true,
+                        'weekStart' => 1,
+                    ],
+                ],
+            ],
+        ],
+    ],
 ];
 
 if (YII_ENV_DEV) {

@@ -2,8 +2,6 @@
 
 namespace app\models;
 
-use Yii;
-
 /**
  * This is the model class for table "alquileres".
  *
@@ -18,8 +16,6 @@ use Yii;
  */
 class Alquileres extends \yii\db\ActiveRecord
 {
-    public $createdAtForm;
-
     // /**
     //  * Escenario usado cuando se crea una nueva instancia.
     //  * @var string
@@ -34,11 +30,6 @@ class Alquileres extends \yii\db\ActiveRecord
         return 'alquileres';
     }
 
-    public function attributes()
-    {
-        return array_merge(parent::attributes(), ['createdAtForm']);
-    }
-
     /**
      * @inheritdoc
      */
@@ -48,13 +39,7 @@ class Alquileres extends \yii\db\ActiveRecord
             [['socio_id', 'pelicula_id'], 'required'],
             [['socio_id', 'pelicula_id'], 'default', 'value' => null],
             [['socio_id', 'pelicula_id'], 'integer'],
-            [
-                ['createdAtForm'],
-                'datetime',
-                'timeZone' => Yii::$app->formatter->timeZone,
-                'timestampAttribute' => 'created_at',
-                'timestampAttributeFormat' => 'php:Y-m-d H:i:s',
-            ],
+//            [['created_at'], 'datetime'],
             [['devolucion'], 'safe'],
             [['socio_id', 'pelicula_id', 'created_at'], 'unique', 'targetAttribute' => ['socio_id', 'pelicula_id', 'created_at']],
             [['pelicula_id'], 'exist', 'skipOnError' => true, 'targetClass' => Peliculas::className(), 'targetAttribute' => ['pelicula_id' => 'id']],
@@ -112,12 +97,5 @@ class Alquileres extends \yii\db\ActiveRecord
     public function getSocio()
     {
         return $this->hasOne(Socios::className(), ['id' => 'socio_id'])->inverseOf('alquileres');
-    }
-
-    public function afterFind()
-    {
-        parent::afterFind();
-
-        $this->createdAtForm = Yii::$app->formatter->asDatetime($this->created_at);
     }
 }
