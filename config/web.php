@@ -1,5 +1,6 @@
 <?php
 
+
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 $log = require __DIR__ . '/log.php';
@@ -13,6 +14,22 @@ $config = [
         '@npm' => '@vendor/npm-asset',
     ],
     'language' => 'es-ES',
+    'container' => [
+        'definitions' => [
+            yii\data\Pagination::className() => [
+                'pageSize' => 5,
+            ],
+            kartik\number\NumberControl::className() => [
+                'maskedInputOptions' => [
+                    'prefix' => '',
+                    'suffix' => ' €',
+                    //'allowMinus' => false,
+                    'groupSeparator' => '.',
+                    'radixPoint' => ',',
+                ],
+            ],
+        ],
+    ],
     'components' => [
         'formatter' => [
             'timeZone' => 'Europe/Madrid',
@@ -75,6 +92,11 @@ $config = [
                     'pluginOptions' => [
                         'autoclose' => true,
                         'weekStart' => 1,
+                    ],
+                ],
+                \kartik\datecontrol\Module::FORMAT_DATE => [
+                    'options' => [
+                        'readonly' => true,
                     ],
                 ],
             ],

@@ -107,7 +107,7 @@ class AlquileresSearch extends Alquileres
         $query->andFilterWhere([
             'socios.numero' => $this->getAttribute('socio.numero'),
             'peliculas.codigo' => $this->getAttribute('pelicula.codigo'),
-            'created_at' => $this->created_at,
+            'cast(created_at as date)' => $this->created_at,
             'devolucion' => $this->devolucion,
         ]);
 

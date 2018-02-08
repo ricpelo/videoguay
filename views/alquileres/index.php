@@ -3,6 +3,8 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 
+use kartik\datecontrol\DateControl;
+
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\AlquileresSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -21,13 +23,21 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-//        'filterModel' => $searchModel,
+        'filterModel' => $searchModel,
         'columns' => [
             'socio.numero',
             'socio.nombre',
             'pelicula.codigo',
             'pelicula.titulo',
-            'created_at:datetime',
+            [
+                'attribute' => 'created_at',
+                'filter' => DateControl::widget([
+                    'type' => DateControl::FORMAT_DATE,
+                    'model' => $searchModel,
+                    'attribute' => 'created_at',
+                ]),
+                'format' => 'datetime',
+            ],
             'devolucion:datetime',
 
             ['class' => 'yii\grid\ActionColumn'],

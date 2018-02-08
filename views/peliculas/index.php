@@ -29,7 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'codigo',
             'titulo',
-            'precio_alq',
+            'precio_alq:currency',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

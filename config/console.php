@@ -15,6 +15,13 @@ $config = [
         '@npm' => '@vendor/npm-asset',
         '@tests' => '@app/tests',
     ],
+    'container' => [
+        'definitions' => [
+            yii\data\Pagination::className() => [
+                'pageSize' => 7,
+            ],
+        ],
+    ],
     'components' => [
         'formatter' => [
             'dateFormat' => 'php:d-m-Y',
