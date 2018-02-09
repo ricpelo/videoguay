@@ -3,7 +3,8 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 
-use kartik\datecontrol\DateControl;
+use kartik\daterange\DateRangePicker;
+
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\AlquileresSearch */
@@ -31,12 +32,26 @@ $this->params['breadcrumbs'][] = $this->title;
             'pelicula.titulo',
             [
                 'attribute' => 'created_at',
-                'filter' => DateControl::widget([
-                    'type' => DateControl::FORMAT_DATE,
+                'filter' => DateRangePicker::widget([
                     'model' => $searchModel,
                     'attribute' => 'created_at',
+                    'startAttribute' => 'desdeAlquilado',
+                    'endAttribute' => 'hastaAlquilado',
+                    'convertFormat'=>true,
+                    'pluginOptions'=> [
+                        'locale' => ['format' => 'd-m-Y'],
+                    ],
                 ]),
-                'format' => 'datetime',
+                'format' => 'raw',
+                'value' => function ($model, $key, $index, $column) {
+                    $d = new DateTime($model->created_at);
+                    $d = $d->format('Y-m-d');
+                    return Html::a(Yii::$app->formatter->asDatetime($model->created_at),
+                        ['alquileres/index',
+                         'AlquileresSearch[hastaAlquilado]' => $d,
+                         'AlquileresSearch[desdeAlquilado]' => $d,
+                     ]);
+                },
             ],
             'devolucion:datetime',
 

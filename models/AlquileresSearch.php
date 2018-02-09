@@ -107,7 +107,7 @@ class AlquileresSearch extends Alquileres
         $query->andFilterWhere([
             'socios.numero' => $this->getAttribute('socio.numero'),
             'peliculas.codigo' => $this->getAttribute('pelicula.codigo'),
-            'cast(created_at as date)' => $this->created_at,
+            // 'cast(created_at as date)' => $this->created_at,
             'devolucion' => $this->devolucion,
         ]);
 
@@ -121,6 +121,12 @@ class AlquileresSearch extends Alquileres
             'ilike',
             'peliculas.titulo',
             $this->getAttribute('pelicula.titulo'),
+        ]);
+
+        $query->andFilterWhere([
+            'between',
+            'cast(created_at as date)',
+            $this->desdeAlquilado, $this->hastaAlquilado,
         ]);
 
         return $dataProvider;

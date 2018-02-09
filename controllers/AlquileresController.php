@@ -136,6 +136,8 @@ class AlquileresController extends Controller
         $searchModel = new AlquileresSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        $dataProvider->query->where(['devolucion' => null]);
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,

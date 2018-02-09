@@ -2,6 +2,18 @@
 -- Archivo de base de datos --
 ------------------------------
 
+DROP TABLE IF EXISTS usuarios CASCADE;
+
+CREATE TABLE usuarios
+(
+    id       bigserial    PRIMARY KEY
+  , nombre   varchar(255) NOT NULL UNIQUE
+  , password varchar(255) NOT NULL
+  , email    varchar(255)
+);
+
+CREATE INDEX idx_usuarios_email ON usuarios (email);
+
 DROP TABLE IF EXISTS socios_id CASCADE;
 
 CREATE TABLE socios_id
@@ -52,6 +64,12 @@ CREATE TABLE alquileres
 
 CREATE INDEX idx_alquileres_pelicula_id ON alquileres (pelicula_id);
 CREATE INDEX idx_alquileres_created_at ON alquileres (created_at DESC);
+
+-- Datos de prueba
+
+INSERT INTO usuarios (nombre, password, email)
+    VALUES ('pepe', crypt('pepe', gen_salt('bf', 13)), 'pepe@pepe.com')
+         , ('juan', crypt('juan', gen_salt('bf', 13)), 'juan@juan.com');
 
 INSERT INTO socios_id (id) VALUES (DEFAULT), (DEFAULT), (DEFAULT);
 
