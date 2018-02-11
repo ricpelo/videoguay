@@ -4,12 +4,31 @@ namespace app\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
+use kartik\daterange\DateRangeBehavior;
 
 /**
  * AlquileresSearch represents the model behind the search form of `app\models\Alquileres`.
  */
 class AlquileresSearch extends Alquileres
 {
+    public $inicio;
+    public $fin;
+
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => DateRangeBehavior::className(),
+                'attribute' => 'created_at',
+                'dateStartAttribute' => 'inicio',
+                'dateEndAttribute' => 'fin',
+                'dateFormat' => 'd-m-Y',
+                'dateStartFormat' => 'Y-m-d',
+                'dateEndFormat' => 'Y-m-d',
+            ],
+        ];
+    }
+
     /**
      * @inheritdoc
      */
@@ -17,7 +36,8 @@ class AlquileresSearch extends Alquileres
     {
         return [
             [['socio.numero', 'pelicula.codigo'], 'integer'],
-            [['created_at', 'devolucion', 'socio.nombre', 'pelicula.titulo'], 'safe'],
+            [['devolucion', 'socio.nombre', 'pelicula.titulo'], 'safe'],
+            [['created_at'], 'match', 'pattern' => '/^\d{2}-\d{2}-\d{4} - \d{2}-\d{2}-\d{4}$/'],
         ];
     }
 
@@ -107,10 +127,7 @@ class AlquileresSearch extends Alquileres
             $this->getAttribute('pelicula.titulo'),
         ]);
 
-        if (!empty($this->created_at) && strpos($this->created_at, ' - ') !== false) {
-            [$inicio, $fin] = explode(' - ', $this->created_at);
-            $query->andFilterWhere(['between', 'CAST(created_at AS date)', $inicio, $fin,]);
-        }
+        $query->andFilterWhere(['between', 'CAST(created_at AS date)', $this->inicio, $this->fin]);
 
         return $dataProvider;
     }
