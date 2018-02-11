@@ -35,11 +35,19 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter' => DateRangePicker::widget([
                     'model' => $searchModel,
                     'attribute' => 'created_at',
-                    'startAttribute' => 'desdeAlquilado',
-                    'endAttribute' => 'hastaAlquilado',
-                    'convertFormat'=>true,
+                    'convertFormat' => false,
+                    'readonly' => true,
+                    'autoUpdateOnInit' => false,
                     'pluginOptions'=> [
-                        'locale' => ['format' => 'd-m-Y'],
+                        'locale' => [
+                            'format' => 'DD-MM-YYYY',
+                            'cancelLabel' => 'Limpiar',
+                        ],
+                    ],
+                    'pluginEvents' => [
+                        "cancel.daterangepicker" => "function (ev, picker) {
+                            $(picker.element[0]).val('').trigger('change');
+                        }",
                     ],
                 ]),
                 'format' => 'raw',

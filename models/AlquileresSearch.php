@@ -10,10 +10,6 @@ use yii\data\ActiveDataProvider;
  */
 class AlquileresSearch extends Alquileres
 {
-    public $desdeAlquilado;
-
-    public $hastaAlquilado;
-
     /**
      * @inheritdoc
      */
@@ -21,17 +17,7 @@ class AlquileresSearch extends Alquileres
     {
         return [
             [['socio.numero', 'pelicula.codigo'], 'integer'],
-            [
-                [
-                    'created_at',
-                    'devolucion',
-                    'socio.nombre',
-                    'pelicula.titulo',
-                    'desdeAlquilado',
-                    'hastaAlquilado',
-                ],
-                'safe',
-            ],
+            [['created_at', 'devolucion', 'socio.nombre', 'pelicula.titulo'], 'safe'],
         ];
     }
 
@@ -42,8 +28,6 @@ class AlquileresSearch extends Alquileres
             'socio.nombre',
             'pelicula.codigo',
             'pelicula.titulo',
-            'desdeAlquilado',
-            'hastaAlquilado',
         ]);
     }
 
@@ -123,11 +107,10 @@ class AlquileresSearch extends Alquileres
             $this->getAttribute('pelicula.titulo'),
         ]);
 
-        $query->andFilterWhere([
-            'between',
-            'cast(created_at as date)',
-            $this->desdeAlquilado, $this->hastaAlquilado,
-        ]);
+        if (!empty($this->created_at) && strpos($this->created_at, ' - ') !== false) {
+            [$inicio, $fin] = explode(' - ', $this->created_at);
+            $query->andFilterWhere(['between', 'CAST(created_at AS date)', $inicio, $fin,]);
+        }
 
         return $dataProvider;
     }
