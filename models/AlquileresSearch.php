@@ -11,8 +11,10 @@ use kartik\daterange\DateRangeBehavior;
  */
 class AlquileresSearch extends Alquileres
 {
-    public $inicio;
-    public $fin;
+    public $createdAtInicio;
+    public $createdAtFin;
+    public $devolucionInicio;
+    public $devolucionFin;
 
     public function behaviors()
     {
@@ -20,8 +22,17 @@ class AlquileresSearch extends Alquileres
             [
                 'class' => DateRangeBehavior::className(),
                 'attribute' => 'created_at',
-                'dateStartAttribute' => 'inicio',
-                'dateEndAttribute' => 'fin',
+                'dateStartAttribute' => 'createdAtInicio',
+                'dateEndAttribute' => 'createdAtFin',
+                'dateFormat' => 'd-m-Y',
+                'dateStartFormat' => 'Y-m-d',
+                'dateEndFormat' => 'Y-m-d',
+            ],
+            [
+                'class' => DateRangeBehavior::className(),
+                'attribute' => 'devolucion',
+                'dateStartAttribute' => 'devolucionInicio',
+                'dateEndAttribute' => 'devolucionFin',
                 'dateFormat' => 'd-m-Y',
                 'dateStartFormat' => 'Y-m-d',
                 'dateEndFormat' => 'Y-m-d',
@@ -37,7 +48,11 @@ class AlquileresSearch extends Alquileres
         return [
             [['socio.numero', 'pelicula.codigo'], 'integer'],
             [['devolucion', 'socio.nombre', 'pelicula.titulo'], 'safe'],
-            [['created_at'], 'match', 'pattern' => '/^\d{2}-\d{2}-\d{4} - \d{2}-\d{2}-\d{4}$/'],
+            [
+                ['created_at', 'devolucion'],
+                'match',
+                'pattern' => '/^\d{2}-\d{2}-\d{4} - \d{2}-\d{2}-\d{4}$/'
+            ],
         ];
     }
 
@@ -112,7 +127,6 @@ class AlquileresSearch extends Alquileres
             'socios.numero' => $this->getAttribute('socio.numero'),
             'peliculas.codigo' => $this->getAttribute('pelicula.codigo'),
             // 'cast(created_at as date)' => $this->created_at,
-            'devolucion' => $this->devolucion,
         ]);
 
         $query->andFilterWhere([
@@ -127,7 +141,19 @@ class AlquileresSearch extends Alquileres
             $this->getAttribute('pelicula.titulo'),
         ]);
 
-        $query->andFilterWhere(['between', 'CAST(created_at AS date)', $this->inicio, $this->fin]);
+        $query->andFilterWhere([
+            'between',
+            'CAST(created_at AS date)',
+            $this->createdAtInicio,
+            $this->createdAtFin
+        ]);
+
+        $query->andFilterWhere([
+            'between',
+            'CAST(devolucion AS date)',
+            $this->devolucionInicio,
+            $this->devolucionFin
+        ]);
 
         return $dataProvider;
     }
