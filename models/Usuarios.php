@@ -64,12 +64,12 @@ class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
 
     public function getAuthKey()
     {
-        // return $this->authKey;
+        return $this->auth_key;
     }
 
     public function validateAuthKey($authKey)
     {
-        // return $this->authKey === $authKey;
+        return $this->auth_key === $authKey;
     }
 
     public function validatePassword($password)
@@ -78,5 +78,16 @@ class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
             $password,
             $this->password
         );
+    }
+
+    public function beforeSave($insert)
+    {
+        if (parent::beforeSave($insert)) {
+            if ($insert) {
+                $this->auth_key = \Yii::$app->security->generateRandomString();
+            }
+            return true;
+        }
+        return false;
     }
 }

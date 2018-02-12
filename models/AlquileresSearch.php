@@ -2,9 +2,9 @@
 
 namespace app\models;
 
+use kartik\daterange\DateRangeBehavior;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use kartik\daterange\DateRangeBehavior;
 
 /**
  * AlquileresSearch represents the model behind the search form of `app\models\Alquileres`.
@@ -51,7 +51,7 @@ class AlquileresSearch extends Alquileres
             [
                 ['created_at', 'devolucion'],
                 'match',
-                'pattern' => '/^\d{2}-\d{2}-\d{4} - \d{2}-\d{2}-\d{4}$/'
+                'pattern' => '/^\d{2}-\d{2}-\d{4} - \d{2}-\d{2}-\d{4}$/',
             ],
         ];
     }
@@ -145,14 +145,14 @@ class AlquileresSearch extends Alquileres
             'between',
             'CAST(created_at AS date)',
             $this->createdAtInicio,
-            $this->createdAtFin
+            $this->createdAtFin,
         ]);
 
         $query->andFilterWhere([
             'between',
             'CAST(devolucion AS date)',
             $this->devolucionInicio,
-            $this->devolucionFin
+            $this->devolucionFin,
         ]);
 
         return $dataProvider;

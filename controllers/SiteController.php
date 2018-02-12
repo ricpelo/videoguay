@@ -54,6 +54,36 @@ class SiteController extends Controller
         ];
     }
 
+    public function actionPepe()
+    {
+        $filter = [
+            'model' => 'search',
+            'attribute' => 'devolucion',
+            'readonly' => true,
+            'autoUpdateOnInit' => false,
+            'pluginOptions'=> [
+                'locale' => [
+                    'format' => 'DD-MM-YYYY',
+                    'cancelLabel' => 'Limpiar',
+                ],
+            ],
+            'pluginEvents' => [
+                "cancel.daterangepicker" => "function (ev, picker) {
+                    $(picker.element[0]).val('').trigger('change');
+                }",
+            ],
+        ];
+
+        $nuevo = [
+            'pluginOptions' => [
+                'locale' => [
+                    'cancelLabel' => 'Cancelar',
+                ],
+            ],
+        ];
+
+        print_r(\yii\helpers\ArrayHelper::merge($filter, $nuevo));
+    }
     /**
      * Displays homepage.
      *

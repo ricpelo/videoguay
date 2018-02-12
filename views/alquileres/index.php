@@ -1,10 +1,9 @@
 <?php
 
+//use app\widgets\DateRangePicker;
 use yii\helpers\Html;
 use yii\grid\GridView;
-
 use kartik\daterange\DateRangePicker;
-
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\AlquileresSearch */
@@ -35,19 +34,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter' => DateRangePicker::widget([
                     'model' => $searchModel,
                     'attribute' => 'created_at',
-                    'readonly' => true,
-                    'autoUpdateOnInit' => false,
-                    'pluginOptions'=> [
-                        'locale' => [
-                            'format' => 'DD-MM-YYYY',
-                            'cancelLabel' => 'Limpiar',
-                        ],
-                    ],
-                    'pluginEvents' => [
-                        "cancel.daterangepicker" => "function (ev, picker) {
-                            $(picker.element[0]).val('').trigger('change');
-                        }",
-                    ],
                 ]),
                 'format' => 'raw',
                 'value' => function ($model, $key, $index, $column) {
@@ -65,19 +51,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter' => DateRangePicker::widget([
                     'model' => $searchModel,
                     'attribute' => 'devolucion',
-                    'readonly' => true,
-                    'autoUpdateOnInit' => false,
-                    'pluginOptions'=> [
-                        'locale' => [
-                            'format' => 'DD-MM-YYYY',
-                            'cancelLabel' => 'Limpiar',
-                        ],
-                    ],
-                    'pluginEvents' => [
-                        "cancel.daterangepicker" => "function (ev, picker) {
-                            $(picker.element[0]).val('').trigger('change');
-                        }",
-                    ],
                 ]),
                 'format' => 'datetime',
             ],

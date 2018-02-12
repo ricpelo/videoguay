@@ -3,6 +3,7 @@
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 $log = require __DIR__ . '/log.php';
+$container = require __DIR__ . '/container.php';
 
 $config = [
     'id' => 'basic-console',
@@ -15,18 +16,12 @@ $config = [
         '@npm' => '@vendor/npm-asset',
         '@tests' => '@app/tests',
     ],
-    'container' => [
-        'definitions' => [
-            yii\data\Pagination::className() => [
-                'pageSize' => 7,
-            ],
-        ],
-    ],
+    'container' => $container,
     'components' => [
         'formatter' => [
-            'dateFormat' => 'php:d-m-Y',
-            'datetimeFormat' => 'php:d-m-Y H:i:s',
             'timeZone' => 'Europe/Madrid',
+            'datetimeFormat' => $params['datetimeFormat'],
+            'dateFormat' => $params['dateFormat'],
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',

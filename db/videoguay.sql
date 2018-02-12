@@ -10,6 +10,7 @@ CREATE TABLE usuarios
   , nombre   varchar(255) NOT NULL UNIQUE
   , password varchar(255) NOT NULL
   , email    varchar(255)
+  , auth_key varchar(255)
 );
 
 CREATE INDEX idx_usuarios_email ON usuarios (email);
