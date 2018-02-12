@@ -64,12 +64,12 @@ class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
 
     public function getAuthKey()
     {
-        // return $this->authKey;
+        return $this->auth_key;
     }
 
     public function validateAuthKey($authKey)
     {
-        // return $this->authKey === $authKey;
+        return $this->auth_key === $authKey;
     }
 
     public function validatePassword($password)
@@ -78,5 +78,11 @@ class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
             $password,
             $this->password
         );
+    }
+
+    public static function getPermitido()
+    {
+        return !Yii::$app->user->isGuest
+            && in_array(Yii::$app->user->identity->nombre, ['pepe', 'juan']);
     }
 }

@@ -3,6 +3,8 @@
 /* @var $this \yii\web\View */
 /* @var $content string */
 
+use app\models\Usuarios;
+
 use app\widgets\Alert;
 use yii\helpers\Html;
 use yii\bootstrap\Nav;
@@ -35,29 +37,32 @@ AppAsset::register($this);
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
+    $items = [
+        ['label' => 'Home', 'url' => ['/site/index']],
+        ['label' => 'Gestionar', 'url' => ['alquileres/gestionar']],
+        ['label' => 'Socios', 'url' => ['socios/index']],
+        ['label' => 'Películas', 'url' => ['peliculas/index']],
+        ['label' => 'About', 'url' => ['/site/about']],
+        ['label' => 'Contact', 'url' => ['/site/contact']],
+        Yii::$app->user->isGuest ? (
+            ['label' => 'Login', 'url' => ['/site/login']]
+        ) : (
+            '<li>'
+            . Html::beginForm(['/site/logout'], 'post')
+            . Html::submitButton(
+                'Logout (' . Yii::$app->user->identity->nombre . ')',
+                ['class' => 'btn btn-link logout']
+            )
+            . Html::endForm()
+            . '</li>'
+        )
+    ];
+    if (Usuarios::getPermitido()) {
+        array_splice($items, 4, 0, [['label' => 'Alquileres', 'url' => ['alquileres/index']]]);
+    }
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
-        'items' => [
-            ['label' => 'Home', 'url' => ['/site/index']],
-            ['label' => 'Gestionar', 'url' => ['alquileres/gestionar']],
-            ['label' => 'Socios', 'url' => ['socios/index']],
-            ['label' => 'Películas', 'url' => ['peliculas/index']],
-            ['label' => 'Alquileres', 'url' => ['alquileres/index']],
-            ['label' => 'About', 'url' => ['/site/about']],
-            ['label' => 'Contact', 'url' => ['/site/contact']],
-            Yii::$app->user->isGuest ? (
-                ['label' => 'Login', 'url' => ['/site/login']]
-            ) : (
-                '<li>'
-                . Html::beginForm(['/site/logout'], 'post')
-                . Html::submitButton(
-                    'Logout (' . Yii::$app->user->identity->nombre . ')',
-                    ['class' => 'btn btn-link logout']
-                )
-                . Html::endForm()
-                . '</li>'
-            )
-        ],
+        'items' => $items
     ]);
     NavBar::end();
     ?>

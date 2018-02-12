@@ -8,8 +8,10 @@ use app\models\GestionarPeliculaForm;
 use app\models\GestionarSocioForm;
 use app\models\Peliculas;
 use app\models\Socios;
+use app\models\Usuarios;
 use Yii;
 use yii\data\ActiveDataProvider;
+use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
@@ -32,6 +34,25 @@ class AlquileresController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+                ],
+            ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['gestionar', 'index'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['gestionar'],
+                        'roles' => ['@'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['index'],
+                        'roles' => ['@'],
+                        'matchCallback' => function ($rule, $action) {
+                            return Usuarios::getPermitido();
+                        },
+                    ],
                 ],
             ],
         ];
