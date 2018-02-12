@@ -163,6 +163,10 @@ class AlquileresController extends Controller
         ]);
     }
 
+    /**
+     * Muestra un listado de alquileres.
+     * @return mixed
+     */
     public function actionListado()
     {
         $dataProvider = new ActiveDataProvider([
