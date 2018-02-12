@@ -44,18 +44,24 @@ AppAsset::register($this);
         ['label' => 'Películas', 'url' => ['peliculas/index']],
         ['label' => 'About', 'url' => ['/site/about']],
         ['label' => 'Contact', 'url' => ['/site/contact']],
-        Yii::$app->user->isGuest ? (
-            ['label' => 'Login', 'url' => ['/site/login']]
-        ) : (
-            '<li>'
-            . Html::beginForm(['/site/logout'], 'post')
-            . Html::submitButton(
-                'Logout (' . Yii::$app->user->identity->nombre . ')',
-                ['class' => 'btn btn-link logout']
-            )
-            . Html::endForm()
-            . '</li>'
-        )
+        [
+            'label' => 'Usuarios',
+            'items' => [
+                Yii::$app->user->isGuest ? (
+                    ['label' => 'Login', 'url' => ['/site/login']]
+                ) : (
+                    '<li>'
+                    . Html::beginForm(['/site/logout'], 'post')
+                    . Html::submitButton(
+                        'Logout (' . Yii::$app->user->identity->nombre . ')',
+                        ['class' => 'btn btn-link logout']
+                    )
+                    . Html::endForm()
+                    . '</li>'
+                ),
+                ['label' => 'Registrarse', 'url' => ['usuarios/create']],
+            ],
+        ],
     ];
     if (Usuarios::getPermitido()) {
         array_splice($items, 4, 0, [['label' => 'Alquileres', 'url' => ['alquileres/index']]]);
