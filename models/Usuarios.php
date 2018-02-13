@@ -15,6 +15,9 @@ use yii\web\IdentityInterface;
  */
 class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
 {
+    const ESCENARIO_CREATE = 'create';
+    const ESCENARIO_UPDATE = 'update';
+
     /**
      * Atributo usado para guardar el campo de "confirmar contraseña" del
      * formulario de creación de usuarios.
@@ -35,16 +38,32 @@ class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
         return array_merge(parent::attributes(), ['password_repeat']);
     }
 
+    // public function scenarios()
+    // {
+    //     $padre = parent::scenarios();
+    //     return array_merge($padre, [
+    //         self::ESCENARIO_UPDATE => $padre[self::ESCENARIO_CREATE],
+    //     ]);
+    // }
+
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['nombre', 'password', 'password_repeat'], 'required'],
-            [['nombre', 'password', 'email'], 'string', 'max' => 255],
-            [['password_repeat'], 'compare', 'compareAttribute' => 'password'],
+            [['nombre'], 'required'],
+            [['password', 'password_repeat'], 'required', 'on' => self::ESCENARIO_CREATE],
+            [['nombre', 'password', 'password_repeat', 'email'], 'string', 'max' => 255],
+            [
+                ['password_repeat'],
+                'compare',
+                'compareAttribute' => 'password',
+                'skipOnEmpty' => false,
+                'on' => [self::ESCENARIO_CREATE, self::ESCENARIO_UPDATE],
+            ],
             [['nombre'], 'unique'],
+            [['email'], 'default'],
             [['email'], 'email'],
         ];
     }
@@ -119,7 +138,17 @@ class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
         if (parent::beforeSave($insert)) {
             if ($insert) {
                 $this->auth_key = Yii::$app->security->generateRandomString();
-                $this->password = Yii::$app->security->generatePasswordHash($this->password);
+                if ($this->scenario === self::ESCENARIO_CREATE) {
+                    $this->password = Yii::$app->security->generatePasswordHash($this->password);
+                }
+            } else {
+                if ($this->scenario === self::ESCENARIO_UPDATE) {
+                    if ($this->password === '') {
+                        $this->password = $this->getOldAttribute('password');
+                    } else {
+                        $this->password = Yii::$app->security->generatePasswordHash($this->password);
+                    }
+                }
             }
             return true;
         }

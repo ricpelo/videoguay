@@ -44,25 +44,29 @@ AppAsset::register($this);
         ['label' => 'Películas', 'url' => ['peliculas/index']],
         ['label' => 'About', 'url' => ['/site/about']],
         ['label' => 'Contact', 'url' => ['/site/contact']],
-        [
+    ];
+    if (Yii::$app->user->isGuest) {
+        $items[] = [
             'label' => 'Usuarios',
             'items' => [
-                Yii::$app->user->isGuest ? (
-                    ['label' => 'Login', 'url' => ['/site/login']]
-                ) : (
-                    '<li>'
-                    . Html::beginForm(['/site/logout'], 'post')
-                    . Html::submitButton(
-                        'Logout (' . Yii::$app->user->identity->nombre . ')',
-                        ['class' => 'btn btn-link logout']
-                    )
-                    . Html::endForm()
-                    . '</li>'
-                ),
+                ['label' => 'Login', 'url' => ['/site/login']],
                 ['label' => 'Registrarse', 'url' => ['usuarios/create']],
             ],
-        ],
-    ];
+        ];
+    } else {
+        $items[] = [
+            'label' => 'Usuarios (' . Yii::$app->user->identity->nombre . ')',
+            'items' => [
+                ['label' => 'Modificar datos', 'url' => ['usuarios/update']],
+                '<li class="divider"></li>',
+                [
+                    'label' => 'Logout',
+                    'url' => ['site/logout'],
+                    'linkOptions' => ['data-method' => 'POST'],
+                ],
+            ]
+        ];
+    }
     if (Usuarios::getPermitido()) {
         array_splice($items, 4, 0, [['label' => 'Alquileres', 'url' => ['alquileres/index']]]);
     }
