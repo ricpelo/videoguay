@@ -10,9 +10,9 @@ use yii\widgets\ActiveForm;
 
 <div class="usuarios-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(['id' => 'usuarios-form']); ?>
 
-        <?= $form->field($model, 'nombre')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'nombre', ['enableAjaxValidation' => true])->textInput(['maxlength' => true]) ?>
         <?= $form->field($model, 'password')->passwordInput(['maxlength' => true]) ?>
         <?= $form->field($model, 'password_repeat')->passwordInput(['maxlength' => true]) ?>
         <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
