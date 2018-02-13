@@ -22,10 +22,11 @@ if (isset($socio)) {
 <div class="row">
     <div class="col-md-6">
         <?php $form = ActiveForm::begin([
+            'id' => 'gestionar-socio-form',
             'method' => 'get',
             'action' => ['alquileres/gestionar'],
         ]) ?>
-            <?= $form->field($gestionarSocioForm, 'numero') ?>
+            <?= $form->field($gestionarSocioForm, 'numero', ['enableAjaxValidation' => true]) ?>
             <div class="form-group">
                 <?= Html::submitButton('Buscar socio', ['class' => 'btn btn-success']) ?>
             </div>
@@ -38,11 +39,12 @@ if (isset($socio)) {
             <hr>
 
             <?php $form = ActiveForm::begin([
+                'id' => 'gestionar-pelicula-form',
                 'method' => 'get',
                 'action' => ['alquileres/gestionar'],
             ]) ?>
                 <?= Html::hiddenInput('numero', $gestionarPeliculaForm->numero) ?>
-                <?= $form->field($gestionarPeliculaForm, 'codigo') ?>
+                <?= $form->field($gestionarPeliculaForm, 'codigo', ['enableAjaxValidation' => true]) ?>
                 <div class="form-group">
                     <?= Html::submitButton('Buscar película', ['class' => 'btn btn-success']) ?>
                 </div>

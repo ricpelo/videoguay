@@ -18,6 +18,7 @@ use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
+use yii\widgets\ActiveForm;
 
 /**
  * AlquileresController implements the CRUD actions for Alquileres model.
@@ -77,6 +78,11 @@ class AlquileresController extends Controller
         $gestionarSocioForm = new GestionarSocioForm([
             'numero' => $numero,
         ]);
+
+        if (Yii::$app->request->isAjax && $gestionarSocioForm->load(Yii::$app->request->queryParams)) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ActiveForm::validate($gestionarSocioForm);
+        }
 
         $data = [];
 
