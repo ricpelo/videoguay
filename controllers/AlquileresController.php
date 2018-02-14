@@ -67,6 +67,38 @@ class AlquileresController extends Controller
         return parent::beforeAction($action);
     }
 
+    public function actionPendientes($numero)
+    {
+        $socio = Socios::findOne(['numero' => $numero]);
+
+        if ($socio === null) {
+            return '';
+        }
+
+        $pendientes = $socio->getPendientes()->with('pelicula');
+
+        return $this->renderAjax('pendientes', [
+            'pendientes' => $pendientes,
+        ]);
+    }
+
+    public function actionGestionarAjax($numero = null, $codigo = null)
+    {
+        $gestionarPeliculaForm = new GestionarPeliculaForm([
+            'numero' => $numero,
+            'codigo' => $codigo,
+        ]);
+
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ActiveForm::validate($gestionarPeliculaForm);
+        }
+
+        return $this->render('gestionar-ajax', [
+            'gestionarPeliculaForm' => $gestionarPeliculaForm,
+        ]);
+    }
+
     /**
      * Alquila y devuelve películas en una sola acción.
      * @return mixed
