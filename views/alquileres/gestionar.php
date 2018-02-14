@@ -1,6 +1,8 @@
 <?php
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\grid\GridView;
+use yii\data\ActiveDataProvider;
 
 /** @var $this \yii\web\View */
 /** @var $gestionarSocioForm \app\models\GestionarSocioForm */
@@ -17,6 +19,29 @@ $this->params['breadcrumbs'][] = [
 if (isset($socio)) {
     $this->params['breadcrumbs'][] = $socio->nombre;
 }
+
+$js = <<<EOT
+var f = $('#alquilar-form');
+f.on('beforeSubmit', function() {
+    alert('hola');
+    return false;
+    var data = f.serialize();
+    $.ajax({
+        url: form.attr('action'),
+        type: 'POST',
+        data: data,
+        success: function (data) {
+            alert(data);
+            // Implement successful
+        },
+        error: function(jqXHR, errMsg) {
+            alert(errMsg);
+        }
+     });
+     return false; // prevent default submit
+});
+EOT;
+$this->registerJs($js);
 ?>
 
 <div class="row">
@@ -60,9 +85,9 @@ if (isset($socio)) {
                     <h4>Película ya alquilada por <?= $pelicula->pendiente->socio->enlace ?></h4>
                 <?php else: ?>
                     <?= Html::beginForm([
-                        'alquileres/alquilar',
+                        'alquileres/alquilar-ajax',
                         'numero' => $socio->numero,
-                    ]) ?>
+                    ], 'POST', ['id' => 'alquilar-form']) ?>
                         <?= Html::hiddenInput('socio_id', $socio->id) ?>
                         <?= Html::hiddenInput('pelicula_id', $pelicula->id) ?>
                         <div class="form-group">
@@ -76,36 +101,7 @@ if (isset($socio)) {
         <?php endif ?>
     </div>
     <div class="col-md-6">
-        <?php if (isset($socio)): ?>
-            <?php $pendientes = $socio->getPendientes()->with('pelicula') ?>
-            <?php if ($pendientes->exists()): ?>
-                <h3>Alquileres pendientes</h3>
-                <table class="table">
-                    <thead>
-                        <th>Código</th>
-                        <th>Título</th>
-                        <th>Fecha de alquiler</th>
-                        <th>Devolución</th>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($pendientes->each() as $alquiler): ?>
-                            <tr>
-                                <td><?= Html::encode($alquiler->pelicula->codigo) ?></td>
-                                <td><?= $alquiler->pelicula->enlace ?></td>
-                                <td><?= Html::encode(
-                                    Yii::$app->formatter->asDatetime($alquiler->created_at)
-                                ) ?></td>
-                                <?= Html::beginForm(['alquileres/devolver', 'numero' => $socio->numero], 'post') ?>
-                                    <?= Html::hiddenInput('id', $alquiler->id) ?>
-                                    <td><?= Html::submitButton('Devolver', ['class' => 'btn-xs btn-danger']) ?></td>
-                                <?= Html::endForm() ?>
-                            </tr>
-                        <?php endforeach ?>
-                    </tbody>
-                </table>
-            <?php else: ?>
-                <h3>No tiene películas pendientes</h3>
-            <?php endif ?>
-        <?php endif ?>
+        <div id="pendientes">
+        </div>
     </div>
 </div>

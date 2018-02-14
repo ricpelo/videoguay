@@ -14,11 +14,14 @@ use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
+use yii\helpers\Html;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
+use yii\grid\GridView;
+use yii\grid\ActionColumn;
 
 /**
  * AlquileresController implements the CRUD actions for Alquileres model.
@@ -67,6 +70,36 @@ class AlquileresController extends Controller
         return parent::beforeAction($action);
     }
 
+    public function actionPendientes($numero)
+    {
+        if (($socio = Socios::findOne(['numero' => $numero])) === null) {
+            return '';
+        }
+
+        $pendientes = $socio->getPendientes()->with('pelicula');
+
+        return $this->renderAjax('pendientes', [
+            'pendientes' => $pendientes,
+        ]);
+    }
+
+    public function actionGestionarAjax($numero = null, $codigo = null)
+    {
+        $gestionarPeliculaForm = new GestionarPeliculaForm([
+            'numero' => $numero,
+            'codigo' => $codigo,
+        ]);
+
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ActiveForm::validate($gestionarPeliculaForm);
+        }
+
+        return $this->render('gestionar-ajax', [
+            'gestionarPeliculaForm' => $gestionarPeliculaForm,
+        ]);
+    }
+
     /**
      * Alquila y devuelve películas en una sola acción.
      * @return mixed
@@ -79,9 +112,15 @@ class AlquileresController extends Controller
             'numero' => $numero,
         ]);
 
-        if (Yii::$app->request->isAjax && $gestionarSocioForm->load(Yii::$app->request->queryParams)) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
-            return ActiveForm::validate($gestionarSocioForm);
+        if (Yii::$app->request->isAjax) {
+            if ($gestionarSocioForm->load(Yii::$app->request->queryParams)) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $gestionarPeliculaForm = new GestionarPeliculaForm();
+                if ($gestionarPeliculaForm->load(Yii::$app->request->queryParams)) {
+                    return ActiveForm::validate($gestionarSocioForm, $gestionarPeliculaForm);
+                }
+                return ActiveForm::validate($gestionarSocioForm);
+            }
         }
 
         $data = [];
@@ -104,6 +143,22 @@ class AlquileresController extends Controller
         return $this->render('gestionar', $data);
     }
 
+    public function actionAlquilarAjax()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $socio = Socios::findOne(['numero' => Yii::$app->request->post('numero')]);
+        $pelicula = Peliculas::findOne(['codigo' => Yii::$app->request->post('codigo')]);
+        $alquiler = new Alquileres([
+            'socio_id' => $socio->id,
+            'pelicula_id' => $pelicula->id,
+        ]);
+        if ($alquiler->validate()) {
+            $alquiler->save();
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Alquila una película dados `socio_id` y `pelicula_id`
      * pasados por POST.
@@ -124,6 +179,19 @@ class AlquileresController extends Controller
         }
 
         throw new BadRequestHttpException('No se ha creado el alquiler.');
+    }
+
+    public function actionDevolverAjax()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $id = Yii::$app->request->post('id');
+
+        if (($alquiler = Alquileres::findOne($id)) === null) {
+            throw new NotFoundHttpException('El alquiler no existe.');
+        }
+
+        $alquiler->devolucion = date('Y-m-d H:i:s');
+        return $alquiler->save();
     }
 
     /**

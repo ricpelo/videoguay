@@ -11,6 +11,8 @@ use yii\data\ActiveDataProvider;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\widgets\DetailView;
+use yii\web\Response;
 
 /**
  * PeliculasController implements the CRUD actions for Peliculas model.
@@ -164,6 +166,31 @@ class PeliculasController extends Controller
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+
+    public function actionAjax($codigo)
+    {
+        if (!Yii::$app->request->isAjax) {
+            return '';
+        }
+        if (($pelicula = Peliculas::findOne(['codigo' => $codigo])) === null) {
+            return '';
+        }
+        return DetailView::widget([
+            'model' => $pelicula,
+            'attributes' => [
+                'titulo',
+                'precio_alq:currency',
+            ],
+        ]);
+    }
+
+    public function actionAlquilada($codigo)
+    {
+        if (($pelicula = Peliculas::findOne(['codigo' => $codigo])) !== null) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return $pelicula->estaAlquilada;
+        }
     }
 
     /**

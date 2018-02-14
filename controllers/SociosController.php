@@ -127,6 +127,22 @@ class SociosController extends Controller
         return $this->redirect(['index']);
     }
 
+    public function actionAjax($numero)
+    {
+        if (!Yii::$app->request->isAjax) {
+            return '';
+        }
+        if (($socio = Socios::findOne(['numero' => $numero])) === null) {
+            return '';
+        }
+        return \yii\widgets\DetailView::widget([
+            'model' => $socio,
+            'attributes' => [
+                'nombre',
+                'telefono',
+            ],
+        ]);
+    }
     /**
      * Finds the Socios model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
