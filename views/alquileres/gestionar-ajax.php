@@ -98,6 +98,34 @@ form.on('afterValidateAttribute', function (event, attribute, messages) {
             break;
     }
 });
+$('#alquilar-ajax').on('beforeSubmit', function () {
+    $.ajax({
+        url: $('#alquilar-ajax').attr('action'),
+        type: 'POST',
+        data: {
+            numero: form.yiiActiveForm('find', 'numero').value,
+            codigo: form.yiiActiveForm('find', 'codigo').value
+        },
+        success: function (data) {
+            if (data) {
+                $.ajax({
+                    url: '$urlAlquileresPendientes',
+                    type: 'GET',
+                    data: {
+                        numero: form.yiiActiveForm('find', 'numero').value
+                    },
+                    success: function (data) {
+                        $('#pendientes').html(data);
+                        $('#codigo').val('');
+                        $('#pelicula').empty();
+                        botonAlquilar();
+                    }
+                });
+            }
+        }
+    });
+    return false;
+});
 EOT;
 $this->registerJs($js);
 ?>

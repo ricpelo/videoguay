@@ -136,6 +136,20 @@ class AlquileresController extends Controller
         return $this->render('gestionar', $data);
     }
 
+    public function actionAlquilarAjax()
+    {
+        $numero = Yii::$app->request->post('numero');
+        $codigo = Yii::$app->request->post('codigo');
+        $socio = Socios::findOne(['numero' => $numero]);
+        $pelicula = Peliculas::findOne(['codigo' => $codigo]);
+        $alquiler = new Alquileres([
+            'socio_id' => $socio->id,
+            'pelicula_id' => $pelicula->id,
+        ]);
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return $alquiler->save();
+    }
+
     /**
      * Alquila una película dados `socio_id` y `pelicula_id`
      * pasados por POST.
@@ -156,6 +170,21 @@ class AlquileresController extends Controller
         }
 
         throw new BadRequestHttpException('No se ha creado el alquiler.');
+    }
+
+    public function actionDevolverAjax()
+    {
+        if (($id = Yii::$app->request->post('id')) === null) {
+            throw new NotFoundHttpException('Falta el alquiler.');
+        }
+
+        if (($alquiler = Alquileres::findOne($id)) === null) {
+            throw new NotFoundHttpException('El alquiler no existe.');
+        }
+
+        $alquiler->devolucion = date('Y-m-d H:i:s');
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return $alquiler->save();
     }
 
     /**
