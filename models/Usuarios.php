@@ -3,6 +3,8 @@
 namespace app\models;
 
 use Yii;
+use yii\helpers\Url;
+use yii\imagine\Image;
 use yii\web\IdentityInterface;
 
 /**
@@ -26,6 +28,12 @@ class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
     public $password_repeat;
 
     /**
+     * Contiene la foto del usuario subida en el formulario.
+     * @var UploadedFile
+     */
+    public $foto;
+
+    /**
      * @inheritdoc
      */
     public static function tableName()
@@ -35,7 +43,10 @@ class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
 
     public function attributes()
     {
-        return array_merge(parent::attributes(), ['password_repeat']);
+        return array_merge(parent::attributes(), [
+            'password_repeat',
+            'foto',
+        ]);
     }
 
     // public function scenarios()
@@ -65,7 +76,21 @@ class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
             [['nombre'], 'unique'],
             [['email'], 'default'],
             [['email'], 'email'],
+            [['foto'], 'file', 'extensions' => 'jpg'],
         ];
+    }
+
+    public function upload()
+    {
+        if ($this->foto === null) {
+            return true;
+        }
+        $nombre = Yii::getAlias('@uploads/') . $this->id . '.jpg';
+        $res = $this->foto->saveAs($nombre);
+        if ($res) {
+            Image::thumbnail($nombre, 80, null)->save($nombre);
+        }
+        return $res;
     }
 
     /**
@@ -131,6 +156,15 @@ class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
     {
         return !Yii::$app->user->isGuest
             && in_array(Yii::$app->user->identity->nombre, ['pepe', 'juan']);
+    }
+
+    public function getRutaImagen()
+    {
+        $nombre = Yii::getAlias('@uploads/') . $this->id . '.jpg';
+        if (file_exists($nombre)) {
+            return Url::to('/uploads/') . $this->id . '.jpg';
+        }
+        return Url::to('/uploads/') . 'default.jpg';
     }
 
     public function beforeSave($insert)
