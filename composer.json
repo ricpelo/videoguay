@@ -25,7 +25,8 @@
         "kartik-v/yii2-number": "^1.0",
         "kartik-v/yii2-widget-datepicker": "dev-master",
         "kartik-v/yii2-date-range": "^1.6",
-        "yiisoft/yii2-imagine": "^2.1"
+        "yiisoft/yii2-imagine": "^2.1",
+        "spatie/dropbox-api": "^1.6"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'auth_key',
             [
                 'attribute' => 'foto',
-                'value' => $model->rutaImagen,
+                'value' => 'https://www.dropbox.com/s/snvnn2k9o8z8b55/12.jpg?dl=1',
                 'format' => 'image',
             ]
         ],
